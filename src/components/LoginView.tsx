@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Coffee, Lock, Mail, Eye, EyeOff, LogIn, Sparkles, ShieldCheck } from 'lucide-react';
+import { Coffee, Lock, Mail, Eye, EyeOff, LogIn } from 'lucide-react';
 
 interface LoginViewProps {
   onSuccess: (admin: { name: string; email: string }) => void;
 }
 
 export default function LoginView({ onSuccess }: LoginViewProps) {
-  const [email, setEmail] = useState('iflora@gmail.com');
-  const [password, setPassword] = useState('TeaCoffee#2026');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,12 +39,6 @@ export default function LoginView({ onSuccess }: LoginViewProps) {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const autofillCredentials = () => {
-    setEmail('iflora@gmail.com');
-    setPassword('TeaCoffee#2026');
-    setError(null);
   };
 
   return (
@@ -98,7 +92,7 @@ export default function LoginView({ onSuccess }: LoginViewProps) {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="iflora@gmail.com"
+                    placeholder="Enter your email"
                     className="w-full pl-10 pr-4 py-2.5 bg-slate-950/70 border border-slate-700/80 focus:border-cyan-400 rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all"
                   />
                 </div>
@@ -120,7 +114,7 @@ export default function LoginView({ onSuccess }: LoginViewProps) {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="TeaCoffee#2026"
+                    placeholder="Enter password"
                     className="w-full pl-10 pr-10 py-2.5 bg-slate-950/70 border border-slate-700/80 focus:border-lime-400 rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-lime-500/30 transition-all"
                   />
                   <button
@@ -150,29 +144,24 @@ export default function LoginView({ onSuccess }: LoginViewProps) {
               </button>
             </form>
 
-            {/* Quick credentials autofill helper */}
-            <div className="mt-6 pt-5 border-t border-slate-800/80 text-center">
-              <div className="flex items-center justify-center gap-1.5 text-xs text-slate-400 mb-2">
-                <ShieldCheck className="w-3.5 h-3.5 text-lime-400" />
-                <span>Admin Credentials (Iflora):</span>
-              </div>
-              <div className="inline-flex items-center gap-2 p-2 rounded-xl bg-slate-950/70 border border-slate-800 text-[11px] text-slate-300 font-mono">
-                <span className="text-cyan-400">iflora@gmail.com</span>
-                <span className="text-slate-600">|</span>
-                <span className="text-lime-400">TeaCoffee#2026</span>
-                <button
-                  type="button"
-                  onClick={autofillCredentials}
-                  className="ml-1 text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-300 border border-cyan-400/30 transition-colors"
-                >
-                  Autofill
-                </button>
-              </div>
+            {/* Divider */}
+            <div className="relative my-6 flex items-center justify-center">
+              <div className="w-full border-t border-slate-800/90" />
             </div>
 
-            <div className="mt-4 flex items-center justify-center gap-1 text-[11px] text-slate-500">
-              <Sparkles className="w-3 h-3 text-cyan-400" />
-              <span>Connected to MongoDB Atlas (teadata)</span>
+            {/* Made with ❤️ by Darshan */}
+            <div className="text-center text-xs text-slate-400 flex items-center justify-center gap-1.5">
+              <span>Made with</span>
+              <span className="text-red-500 text-sm inline-block animate-pulse">❤️</span>
+              <span>by</span>
+              <a
+                href="https://darshanrami-portfolio.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-lime-400 hover:from-cyan-300 hover:to-lime-300 underline decoration-cyan-400/50 hover:decoration-lime-400 transition-all cursor-pointer"
+              >
+                Darshan
+              </a>
             </div>
 
           </div>
@@ -181,4 +170,3 @@ export default function LoginView({ onSuccess }: LoginViewProps) {
     </div>
   );
 }
-
