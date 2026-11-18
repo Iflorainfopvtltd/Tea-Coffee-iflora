@@ -8,6 +8,7 @@ import FilterBar from '@/components/FilterBar';
 import RecordsTable from '@/components/RecordsTable';
 import RecordModal from '@/components/RecordModal';
 import DeleteModal from '@/components/DeleteModal';
+import PriceCalculatorModal from '@/components/PriceCalculatorModal';
 import { ITeaCoffeeRecord } from '@/models/Record';
 import { Sparkles, CheckCircle2, AlertCircle, Plus } from 'lucide-react';
 import * as XLSX from 'xlsx';
@@ -37,6 +38,7 @@ export default function Home() {
 
   // Modals state
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const [editRecord, setEditRecord] = useState<ITeaCoffeeRecord | null>(null);
   const [deleteRecordTarget, setDeleteRecordTarget] = useState<ITeaCoffeeRecord | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -425,6 +427,9 @@ export default function Home() {
             setEditRecord(null);
             setIsModalOpen(true);
           }}
+          onOpenCalculator={() => {
+            setIsCalculatorOpen(true);
+          }}
           onEdit={(record) => {
             setEditRecord(record);
             setIsModalOpen(true);
@@ -454,6 +459,13 @@ export default function Home() {
         onClose={() => setDeleteRecordTarget(null)}
         onConfirm={handleConfirmDelete}
         isDeleting={isDeleting}
+      />
+
+      {/* Price Calculator Modal (Rendered at page root level outside table) */}
+      <PriceCalculatorModal
+        isOpen={isCalculatorOpen}
+        onClose={() => setIsCalculatorOpen(false)}
+        initialRecords={records}
       />
 
     </div>

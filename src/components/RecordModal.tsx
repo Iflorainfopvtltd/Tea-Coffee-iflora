@@ -174,7 +174,6 @@ export default function RecordModal({
                     </div>
                     <div>
                       <div className="text-xs font-bold text-slate-100">Morning</div>
-                      <div className="text-[10px] text-cyan-400 font-medium">સવાર</div>
                     </div>
                   </div>
                 </button>
@@ -204,7 +203,6 @@ export default function RecordModal({
                     </div>
                     <div>
                       <div className="text-xs font-bold text-slate-100">Evening</div>
-                      <div className="text-[10px] text-lime-400 font-medium">સાંજ</div>
                     </div>
                   </div>
                 </button>

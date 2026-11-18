@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ITeaCoffeeRecord } from '@/models/Record';
-import { Edit3, Trash2, CupSoda, Coffee, FileText, Calendar, Plus, Sun, Sunset } from 'lucide-react';
+import { Edit3, Trash2, CupSoda, Coffee, FileText, Calendar, Plus, Sun, Sunset, Calculator } from 'lucide-react';
 
 interface RecordsTableProps {
   records: ITeaCoffeeRecord[];
@@ -10,6 +10,7 @@ interface RecordsTableProps {
   onEdit: (record: ITeaCoffeeRecord) => void;
   onDelete: (record: ITeaCoffeeRecord) => void;
   onOpenAddModal: () => void;
+  onOpenCalculator: () => void;
 }
 
 export default function RecordsTable({
@@ -18,6 +19,7 @@ export default function RecordsTable({
   onEdit,
   onDelete,
   onOpenAddModal,
+  onOpenCalculator,
 }: RecordsTableProps) {
   const formatDate = (dateStr: string) => {
     try {
@@ -37,7 +39,7 @@ export default function RecordsTable({
   return (
     <div className="bg-[#090e1a]/80 backdrop-blur-md border border-cyan-500/25 rounded-2xl overflow-hidden shadow-[0_0_25px_rgba(0,0,0,0.6)]">
       {/* Header bar */}
-      <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#00f0ff]"></span>
           <h2 className="text-base font-bold text-slate-100 tracking-wide">
@@ -47,6 +49,16 @@ export default function RecordsTable({
             {records.length} records
           </span>
         </div>
+
+        {/* Calculate Price Button */}
+        <button
+          type="button"
+          onClick={onOpenCalculator}
+          className="group inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold text-cyan-300 bg-cyan-950/60 hover:bg-cyan-900/70 border border-cyan-500/40 hover:border-cyan-400 shadow-[0_0_12px_rgba(0,240,255,0.2)] hover:shadow-[0_0_18px_rgba(0,240,255,0.35)] active:scale-95 transition-all cursor-pointer"
+        >
+          <Calculator className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
+          <span>Calculate Price</span>
+        </button>
       </div>
 
       {/* Table Content */}

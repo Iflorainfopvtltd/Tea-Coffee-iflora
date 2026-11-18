@@ -16,9 +16,11 @@ export async function GET(request: Request) {
     const date = searchParams.get('date');
     const month = searchParams.get('month'); // e.g., '2026-11'
     const search = searchParams.get('search'); // note or general search
+    const startDate = searchParams.get('startDate');
+    const endDate = searchParams.get('endDate');
 
     interface QueryFilter {
-      date?: string | { $regex: string };
+      date?: string | { $regex: string } | { $gte?: string; $lte?: string };
       note?: { $regex: string; $options: string };
     }
 
@@ -26,6 +28,11 @@ export async function GET(request: Request) {
 
     if (date) {
       query.date = date;
+    } else if (startDate || endDate) {
+      const dateRange: { $gte?: string; $lte?: string } = {};
+      if (startDate) dateRange.$gte = startDate;
+      if (endDate) dateRange.$lte = endDate;
+      query.date = dateRange;
     } else if (month) {
       // Matches any date starting with "YYYY-MM"
       query.date = { $regex: `^${month}` };
