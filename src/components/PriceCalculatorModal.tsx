@@ -35,9 +35,62 @@ export default function PriceCalculatorModal({
   initialRecords,
 }: PriceCalculatorModalProps) {
   // Price inputs state (temporary, not stored in DB)
+  const MAX_PRICE_PER_CUP = 10000;
   const [teaPriceInput, setTeaPriceInput] = useState<string>('');
   const [coffeePriceInput, setCoffeePriceInput] = useState<string>('');
   const [showBreakdown, setShowBreakdown] = useState<boolean>(false);
+
+  // Sanitized change handler for price inputs (limits typing and pasting to max 10,000)
+  const handlePriceInputChange = (
+    val: string,
+    setter: (v: string) => void
+  ) => {
+    if (val === '') {
+      setter('');
+      return;
+    }
+
+    const num = parseFloat(val);
+    if (isNaN(num)) {
+      return;
+    }
+
+    if (num < 0) {
+      setter('0');
+      return;
+    }
+
+    if (num > MAX_PRICE_PER_CUP) {
+      setter(String(MAX_PRICE_PER_CUP));
+      return;
+    }
+
+    setter(val);
+  };
+
+  const handlePricePaste = (
+    e: React.ClipboardEvent<HTMLInputElement>,
+    setter: (v: string) => void
+  ) => {
+    e.preventDefault();
+    const pastedText = e.clipboardData.getData('text').trim();
+    const num = parseFloat(pastedText);
+    if (isNaN(num)) return;
+
+    if (num > MAX_PRICE_PER_CUP) {
+      setter(String(MAX_PRICE_PER_CUP));
+    } else if (num < 0) {
+      setter('0');
+    } else {
+      setter(String(num));
+    }
+  };
+
+  const handlePriceKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === '-' || e.key === '+' || e.key === 'e' || e.key === 'E') {
+      e.preventDefault();
+    }
+  };
 
   // Date Filter State inside the modal
   const [filterMode, setFilterMode] = useState<FilterMode>('all');
@@ -130,9 +183,9 @@ export default function PriceCalculatorModal({
     };
   }, [records]);
 
-  // Numeric rates
-  const teaRate = Math.max(0, parseFloat(teaPriceInput) || 0);
-  const coffeeRate = Math.max(0, parseFloat(coffeePriceInput) || 0);
+  // Numeric rates (capped strictly at MAX_PRICE_PER_CUP = 10,000)
+  const teaRate = Math.min(MAX_PRICE_PER_CUP, Math.max(0, parseFloat(teaPriceInput) || 0));
+  const coffeeRate = Math.min(MAX_PRICE_PER_CUP, Math.max(0, parseFloat(coffeePriceInput) || 0));
 
   // Calculations
   const totalTeaAmount = totalTeaCups * teaRate;
@@ -385,7 +438,7 @@ export default function PriceCalculatorModal({
                   <CupSoda className="w-4 h-4 text-cyan-400" />
                   <span>Tea Price (Per Cup)</span>
                 </label>
-                <span className="text-[10px] text-slate-400 font-mono">₹ / Cup</span>
+                <span className="text-[10px] text-cyan-400/80 font-mono font-medium">Max ₹10,000 / Cup</span>
               </div>
 
               <div className="relative">
@@ -395,13 +448,22 @@ export default function PriceCalculatorModal({
                 <input
                   type="number"
                   min="0"
+                  max={MAX_PRICE_PER_CUP}
                   step="any"
                   value={teaPriceInput}
-                  onChange={(e) => setTeaPriceInput(e.target.value)}
-                  placeholder="Enter tea rate (e.g. 10)"
+                  onChange={(e) => handlePriceInputChange(e.target.value, setTeaPriceInput)}
+                  onPaste={(e) => handlePricePaste(e, setTeaPriceInput)}
+                  onKeyDown={handlePriceKeyDown}
+                  placeholder="Enter tea rate (max 10,000)"
                   className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700/80 text-white font-semibold text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/40 transition-all placeholder:text-slate-600"
                 />
               </div>
+
+              {parseFloat(teaPriceInput) >= MAX_PRICE_PER_CUP && (
+                <span className="text-[10px] text-amber-400 font-medium -mt-1.5">
+                  ⚠️ Max price limit ₹10,000 per cup reached
+                </span>
+              )}
 
               {/* Quick Presets */}
               <div className="flex items-center gap-1.5 flex-wrap">
@@ -430,7 +492,7 @@ export default function PriceCalculatorModal({
                   <Coffee className="w-4 h-4 text-lime-400" />
                   <span>Coffee Price (Per Cup)</span>
                 </label>
-                <span className="text-[10px] text-slate-400 font-mono">₹ / Cup</span>
+                <span className="text-[10px] text-lime-400/80 font-mono font-medium">Max ₹10,000 / Cup</span>
               </div>
 
               <div className="relative">
@@ -440,13 +502,22 @@ export default function PriceCalculatorModal({
                 <input
                   type="number"
                   min="0"
+                  max={MAX_PRICE_PER_CUP}
                   step="any"
                   value={coffeePriceInput}
-                  onChange={(e) => setCoffeePriceInput(e.target.value)}
-                  placeholder="Enter coffee rate (e.g. 20)"
+                  onChange={(e) => handlePriceInputChange(e.target.value, setCoffeePriceInput)}
+                  onPaste={(e) => handlePricePaste(e, setCoffeePriceInput)}
+                  onKeyDown={handlePriceKeyDown}
+                  placeholder="Enter coffee rate (max 10,000)"
                   className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700/80 text-white font-semibold text-sm focus:outline-none focus:border-lime-400 focus:ring-1 focus:ring-lime-400/40 transition-all placeholder:text-slate-600"
                 />
               </div>
+
+              {parseFloat(coffeePriceInput) >= MAX_PRICE_PER_CUP && (
+                <span className="text-[10px] text-amber-400 font-medium -mt-1.5">
+                  ⚠️ Max price limit ₹10,000 per cup reached
+                </span>
+              )}
 
               {/* Quick Presets */}
               <div className="flex items-center gap-1.5 flex-wrap">
